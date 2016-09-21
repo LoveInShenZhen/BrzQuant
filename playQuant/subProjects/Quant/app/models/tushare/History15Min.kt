@@ -10,11 +10,11 @@ import javax.persistence.Entity
 
 /**
  * Created by kk on 16/9/21.
- * 日k线历史行情
+ * 15分钟K线历史行情
  */
 
 @Entity
-class HistoryDay : BaseModel() {
+class History15Min : BaseModel() {
 
     @DBIndexed
     @Column(columnDefinition = "VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]'", nullable = false)
@@ -63,8 +63,7 @@ class HistoryDay : BaseModel() {
     @Column(columnDefinition = "DECIMAL(20,4) COMMENT '换手率 [注：指数无此项]'")
     var turnover: BigDecimal? = null
 
-    companion object : Model.Find<Long, HistoryDay>() {
+    companion object : Model.Find<Long, History15Min>() {
 
     }
-
 }

@@ -180,6 +180,21 @@ object PlanTaskService {
     }
 
     fun Enabled(): Boolean {
-        return Hub.configuration().getBoolean("k.planTaskService", false)
+        val enable = Hub.configuration().getBoolean("k.planTaskService", false)
+        if (enable) {
+            try {
+                if (DB.TableExists("plan_task")) {
+                    return true
+                } else {
+                    Helper.DLog(AnsiColor.RED_B, "Database table plan_task does not exists. PlanTask service can not started.")
+                    return false
+                }
+            } catch (ex: Exception) {
+                Helper.DLog(AnsiColor.RED_B, "Start plan task service failed.\n${ExceptionUtil.exceptionChainToString(ex)}")
+                return false
+            }
+        } else {
+            return false
+        }
     }
 }

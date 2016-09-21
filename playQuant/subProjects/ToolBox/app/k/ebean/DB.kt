@@ -8,8 +8,10 @@ package k.ebean
  * To change this template use File | Settings | File Templates.
  */
 
-import com.avaje.ebean.*
-import java.util.concurrent.Callable
+import com.avaje.ebean.Ebean
+import com.avaje.ebean.EbeanServer
+import com.avaje.ebean.TxIsolation
+import com.avaje.ebean.TxScope
 
 
 object DB {
@@ -38,14 +40,20 @@ object DB {
 //        return Ebean.execute(txScope, { callable })
 //    }
 
-    fun RunInTransaction(body : () -> Unit) {
+    fun RunInTransaction(body: () -> Unit) {
         val txScope = TxScope.requiresNew().setIsolation(TxIsolation.READ_COMMITED)
         Ebean.execute(txScope, body)
     }
 
-    fun <T> RunInTransaction(body: () -> T) : T {
+    fun <T> RunInTransaction(body: () -> T): T {
         val txScope = TxScope.requiresNew().setIsolation(TxIsolation.READ_COMMITED)
         return Ebean.execute(txScope, body)
+    }
+
+    fun TableExists(tableName: String): Boolean {
+        val rows = Default().createSqlQuery("SHOW TABLES").findList()
+        val count = rows.count { it.values.first() == tableName }
+        return count > 0
     }
 
 }

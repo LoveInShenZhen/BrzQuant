@@ -1,0 +1,10 @@
+logs
+target
+/playQuant/.idea
+/playQuant/.idea_modules
+/playQuant/.classpath
+/playQuant/.project
+/playQuant/.settings
+/playQuant/RUNNING_PID
+/playQuant/subProjects/*/target
+/playQuant/lib/kotlin-*

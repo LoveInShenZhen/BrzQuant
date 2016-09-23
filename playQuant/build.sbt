@@ -7,6 +7,7 @@ lazy val commonSettings = Seq(
   organization := "love.in.shenzhen",
   version := "1.0-SNAPSHOT",
   scalaVersion := "2.11.7",
+  kotlinVersion := "1.0.4",
   sources in(Compile, doc) := Seq.empty
 )
 

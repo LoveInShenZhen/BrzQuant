@@ -28,7 +28,7 @@ class TickData : BaseModel() {
     var price: BigDecimal? = null
 
     @Column(columnDefinition = "DECIMAL(20,4) COMMENT '价格变动'")
-    var change: BigDecimal? = null
+    var price_change: BigDecimal? = null
 
     @Column(columnDefinition = "DECIMAL(20,4) COMMENT '成交手'")
     var volume: BigDecimal? = null

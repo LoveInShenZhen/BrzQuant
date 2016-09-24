@@ -31,18 +31,25 @@ object PlanTaskService {
         private set
 
     fun Start() {
-        if (isRunning) return
+        try {
+            if (isRunning) return
 
-        stopNow = false
+            stopNow = false
 
-        seqTaskLoader = BuildTaskLoader(true, seqWorker)
-        parallerTaskLoader = BuildTaskLoader(false, parallelWorker)
+            seqTaskLoader = BuildTaskLoader(true, seqWorker)
+            parallerTaskLoader = BuildTaskLoader(false, parallelWorker)
 
-        seqTaskLoader!!.start()
-        parallerTaskLoader!!.start()
+            seqTaskLoader!!.start()
+            parallerTaskLoader!!.start()
 
-        isRunning = true
-        Helper.DLog(AnsiColor.GREEN, "Plan Task Service Started......")
+            isRunning = true
+            Helper.DLog(AnsiColor.GREEN, "Plan Task Service Started......")
+        } catch (ex: Exception) {
+            stopNow = true
+            isRunning = false
+
+            Helper.DLog(AnsiColor.RED_B, "Start planTask service failed.\n${ExceptionUtil.exceptionChainToString(ex)}")
+        }
     }
 
     fun Stop() {

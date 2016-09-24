@@ -6,6 +6,7 @@ import k.common.apidoc.ApiDefinition
 import k.common.apidoc.DefinedApis
 import k.common.template.ResourceTemplateHelper
 import k.controllers.JsonpController
+import k.ebean.DbIndex
 import play.mvc.Result
 import javax.inject.Inject
 
@@ -44,6 +45,10 @@ constructor(var definedApis: DefinedApis) : JsonpController() {
         val md = ResourceTemplateHelper.Process(DefinedApis::class.java, "/ApiDocTemplates/ApiDoc", apiDef)
 
         return ok(md).`as`("text/plain; charset=UTF-8")
+    }
+
+    fun CreateIndexSql(): Result {
+        return ok(DbIndex.GetCreateIndexSql()).`as`("text/plain; charset=UTF-8")
     }
 
 }

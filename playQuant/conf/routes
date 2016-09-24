@@ -17,6 +17,9 @@ GET        /apis                 controllers.BuildIn.Apis
 GET        /apiIndex             controllers.BuildIn.ApiIndex
 GET        /apiSample            controllers.BuildIn.ApiTest(apiUrl)
 GET        /apiMarkdown          controllers.BuildIn.ApiMarkdown
+GET        /CreateIndexSql       controllers.BuildIn.CreateIndexSql
+
+GET        /QuantTest            controllers.QuantSample.QuantTest
 
 
 # Map static resources from the /public folder to the /assets URL path

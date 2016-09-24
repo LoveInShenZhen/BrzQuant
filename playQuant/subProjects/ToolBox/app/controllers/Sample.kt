@@ -30,7 +30,6 @@ constructor(var definedApis: DefinedApis) : JsonpController() {
     fun kktest() : Result {
         val reply = SampleReply()
         Helper.DLog("\n" + ApiInfo.SampleJsonData(StringReply::class))
-
         return ok(reply)
     }
 

@@ -7,6 +7,7 @@ import models.BaseModel
 import java.math.BigDecimal
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.Table
 
 /**
  * Created by kk on 16/9/21.
@@ -14,6 +15,7 @@ import javax.persistence.Entity
  */
 
 @Entity
+@Table(name = "history15min")
 class History15Min : BaseModel() {
 
     @DBIndexed

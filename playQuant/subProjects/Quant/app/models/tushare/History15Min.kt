@@ -20,7 +20,7 @@ class History15Min : BaseModel() {
 
     @DBIndexed
     @Column(columnDefinition = "VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]'", nullable = false)
-    var code: String = ""
+    var code: String = ""       // enum class: StockIndex
 
     @DBIndexed
     @Column(columnDefinition = "DATETIME COMMENT '交易日期'", nullable = false)

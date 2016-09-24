@@ -43,3 +43,8 @@ class TradeCal : BaseModel() {
     companion object : Model.Find<Long, TradeCal>() {
     }
 }
+
+enum class Exchange(val code:String, val desc:String) {
+    XSHG("XSHG", "上海证券交易所"),
+    XSHE("XSHE", "深圳证券交易所")
+}

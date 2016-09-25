@@ -26,4 +26,5 @@ libraryDependencies += "org.jodd" % "jodd-mail" % "3.7"
 
 libraryDependencies += "org.simpleframework" % "simple-xml" % "2.7.1"
 
+libraryDependencies += "org.apache.commons" % "commons-csv" % "1.4"
 

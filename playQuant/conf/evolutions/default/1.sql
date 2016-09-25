@@ -19,6 +19,59 @@ create table big_trade (
   constraint pk_big_trade primary key (id)
 );
 
+create table cashflow_data (
+  id                            bigint auto_increment not null,
+  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  c_name                        varchar(16) COMMENT '股票名称' not null,
+  report_year                   INTEGER COMMENT '年度,4位数字',
+  report_season                 INTEGER COMMENT '季度: 1~4',
+  cf_sales                      decimal(20,4) COMMENT '经营现金净流量对销售收入比率',
+  rateofreturn                  decimal(20,4) COMMENT '资产的经营现金流量回报率',
+  cf_nm                         decimal(20,4) COMMENT '经营现金净流量与净利润的比率',
+  cf_liabilities                decimal(20,4) COMMENT '经营现金净流量对负债比率',
+  cashflowratio                 decimal(20,4) COMMENT '现金流量比率',
+  version                       bigint not null,
+  when_created                  datetime(6) not null,
+  when_modified                 datetime(6) not null,
+  constraint pk_cashflow_data primary key (id)
+);
+
+create table debtpaying_data (
+  id                            bigint auto_increment not null,
+  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  c_name                        varchar(16) COMMENT '股票名称' not null,
+  report_year                   INTEGER COMMENT '年度,4位数字',
+  report_season                 INTEGER COMMENT '季度: 1~4',
+  currentratio                  decimal(20,4) COMMENT '流动比率',
+  quickratio                    decimal(20,4) COMMENT '速动比率',
+  cashratio                     decimal(20,4) COMMENT '现金比率',
+  icratio                       decimal(20,4) COMMENT '利息支付倍数',
+  sheqratio                     decimal(20,4) COMMENT '股东权益比率',
+  adratio                       decimal(20,4) COMMENT '股东权益增长率',
+  version                       bigint not null,
+  when_created                  datetime(6) not null,
+  when_modified                 datetime(6) not null,
+  constraint pk_debtpaying_data primary key (id)
+);
+
+create table growth_data (
+  id                            bigint auto_increment not null,
+  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  c_name                        varchar(16) COMMENT '股票名称' not null,
+  report_year                   INTEGER COMMENT '年度,4位数字',
+  report_season                 INTEGER COMMENT '季度: 1~4',
+  mbrg                          DECIMAL(20,4) COMMENT '主营业务收入增长率(%)',
+  nprg                          DECIMAL(20,4) COMMENT '净利润增长率(%)',
+  nav                           decimal(20,4) COMMENT '净资产增长率',
+  targ                          decimal(20,4) COMMENT '总资产增长率',
+  epsg                          decimal(20,4) COMMENT '每股收益增长率',
+  seg                           decimal(20,4) COMMENT '股东权益增长率',
+  version                       bigint not null,
+  when_created                  datetime(6) not null,
+  when_modified                 datetime(6) not null,
+  constraint pk_growth_data primary key (id)
+);
+
 create table history15min (
   id                            bigint auto_increment not null,
   code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
@@ -228,6 +281,24 @@ create table history_week (
   constraint pk_history_week primary key (id)
 );
 
+create table operation_data (
+  id                            bigint auto_increment not null,
+  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  c_name                        varchar(16) COMMENT '股票名称' not null,
+  report_year                   INTEGER COMMENT '年度,4位数字',
+  report_season                 INTEGER COMMENT '季度: 1~4',
+  arturnover                    DECIMAL(20,4) COMMENT '应收账款周转率(次)',
+  arturndays                    DECIMAL(20,4) COMMENT '应收账款周转天数(天)',
+  inventory_turnover            DECIMAL(20,4) COMMENT '存货周转率(次)',
+  inventory_days                DECIMAL(20,4) COMMENT '存货周转天数(天)',
+  currentasset_turnover         DECIMAL(20,4) COMMENT '流动资产周转率(次)',
+  currentasset_days             DECIMAL(20,4) COMMENT '流动资产周转天数(天)',
+  version                       bigint not null,
+  when_created                  datetime(6) not null,
+  when_modified                 datetime(6) not null,
+  constraint pk_operation_data primary key (id)
+);
+
 create table plan_task (
   id                            bigint auto_increment not null,
   require_seq                   tinyint(1) DEFAULT '1' COMMENT '是否要求顺序执行',
@@ -244,9 +315,28 @@ create table plan_task (
   constraint pk_plan_task primary key (id)
 );
 
-create table report_data (
+create table profit_data (
   id                            bigint auto_increment not null,
   code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
+  c_name                        varchar(16) COMMENT '股票名称' not null,
+  report_year                   INTEGER COMMENT '年度,4位数字',
+  report_season                 INTEGER COMMENT '季度: 1~4',
+  roe                           DECIMAL(20,4) COMMENT '净资产收益率(%)',
+  net_profit_ratio              DECIMAL(20,4) COMMENT '净利率(%)',
+  gross_profit_rate             DECIMAL(20,4) COMMENT '毛利率(%)',
+  net_profits                   DECIMAL(20,4) COMMENT '净利润(万元)',
+  eps                           decimal(20,4) COMMENT '每股收益',
+  business_income               DECIMAL(20,4) COMMENT '营业收入(百万元)',
+  bips                          DECIMAL(20,4) COMMENT '每股主营业务收入(元)',
+  version                       bigint not null,
+  when_created                  datetime(6) not null,
+  when_modified                 datetime(6) not null,
+  constraint pk_profit_data primary key (id)
+);
+
+create table report_data (
+  id                            bigint auto_increment not null,
+  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
   c_name                        varchar(16) COMMENT '股票名称' not null,
   eps                           decimal(20,4) COMMENT '每股收益',
   eps_yoy                       DECIMAL(20,4) COMMENT '每股收益同比(%)',
@@ -305,9 +395,9 @@ create table tick_data (
 create table trade_cal (
   id                            bigint auto_increment not null,
   exchange_name                 CHAR(4) COMMENT '证券交易所: XSHG-上海证券交易所, XSHE-深圳证券交易所' not null,
-  calendar_date                 DATETIME COMMENT '日期' not null,
+  calendar_date                 char(10) COMMENT '日期:YYYY-MM-DD' not null,
   is_open                       tinyint(1) COMMENT '日期当天是否开市',
-  prev_trade_date               DATETIME COMMENT '所在日期前一交易日',
+  prev_trade_date               char(10) COMMENT '所在日期前一交易日',
   is_week_end                   tinyint(1) COMMENT '日期当天是否是当周最后交易日',
   is_month_end                  tinyint(1) COMMENT '日期当天是否是当月最后交易日',
   is_quarter_end                tinyint(1) COMMENT '日期当天是否是当季度最后交易日',
@@ -322,6 +412,12 @@ create table trade_cal (
 # --- !Downs
 
 drop table if exists big_trade;
+
+drop table if exists cashflow_data;
+
+drop table if exists debtpaying_data;
+
+drop table if exists growth_data;
 
 drop table if exists history15min;
 
@@ -343,7 +439,11 @@ drop table if exists history_qfq_data;
 
 drop table if exists history_week;
 
+drop table if exists operation_data;
+
 drop table if exists plan_task;
+
+drop table if exists profit_data;
 
 drop table if exists report_data;
 

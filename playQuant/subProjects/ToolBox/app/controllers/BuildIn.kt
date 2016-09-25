@@ -2,11 +2,14 @@ package controllers
 
 import k.aop.annotations.Comment
 import k.aop.annotations.JsonApi
+import k.common.Hub
 import k.common.apidoc.ApiDefinition
 import k.common.apidoc.DefinedApis
 import k.common.template.ResourceTemplateHelper
 import k.controllers.JsonpController
 import k.ebean.DbIndex
+import play.api.inject.Modules
+import play.inject.BuiltInModule
 import play.mvc.Result
 import javax.inject.Inject
 
@@ -18,7 +21,6 @@ import javax.inject.Inject
 class BuildIn
 @Inject
 constructor(var definedApis: DefinedApis) : JsonpController() {
-
 
     @Comment("列出所有的 API")
     @JsonApi(ReplyClass = ApiDefinition::class)

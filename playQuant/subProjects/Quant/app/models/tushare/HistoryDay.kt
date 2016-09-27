@@ -4,6 +4,8 @@ import com.avaje.ebean.Model
 import jodd.datetime.JDateTime
 import k.aop.annotations.DBIndexed
 import models.BaseModel
+import org.apache.commons.csv.CSVRecord
+import java.io.File
 import java.math.BigDecimal
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -63,8 +65,16 @@ class HistoryDay : BaseModel() {
     @Column(columnDefinition = "DECIMAL(20,4) COMMENT '换手率 [注：指数无此项]'")
     var turnover: BigDecimal? = null
 
-    companion object : Model.Find<Long, HistoryDay>() {
+    fun FillBy(csvRecord: CSVRecord):HistoryDay {
 
+        // TODO:
+        return this
+    }
+
+    companion object : Model.Find<Long, HistoryDay>() {
+        fun CsvToDb(csvFile: File) {
+
+        }
     }
 
 }

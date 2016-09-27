@@ -6,7 +6,7 @@ import k.common.Helper
 import k.controllers.JsonpController
 import k.reply.ReplyBase
 import play.mvc.Result
-import tushare.ScriptResult
+import tushare.TuShareScript
 
 /**
  * Created by kk on 16/8/23.
@@ -19,17 +19,11 @@ class QuantSample : JsonpController() {
     @JsonApi
     fun QuantTest(): Result {
 
-        val jsonStr = """{
-                            "csvpath": "/Users/kk/ssdwork/github/tuShareData/get_stock_basics/2016-09-27.csv",
-                            "msg": "OK",
-                            "ret": 0
-                        }
-                        """
+        val script = TuShareScript(name = "getStockBasics.py")
+        val result = script.Run().Result
 
-        val result = Helper.FromJsonString(jsonStr, ScriptResult::class.java)
-
-        Helper.DLog("csvpath: ${result.csvpath}")
         Helper.DLog("\n${Helper.ToJsonStringPretty(result)}")
+
 
         return ok(ReplyBase())
     }

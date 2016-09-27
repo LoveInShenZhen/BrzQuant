@@ -1,9 +1,9 @@
 package models.tushare
 
 import com.avaje.ebean.Model
-import com.sun.org.apache.xpath.internal.operations.Bool
 import jodd.datetime.JDateTime
 import k.aop.annotations.DBIndexed
+import k.ebean.DB
 import models.BaseModel
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVParser
@@ -82,7 +82,7 @@ class StockBasics : BaseModel() {
         this.industry = csvRecord.get("industry")
         this.area = csvRecord.get("area")
         this.pe = csvRecord.getBigDecimal("pe")
-        this.outstanding = csvRecord.getBigDecimal(csvRecord.get("outstanding"))
+        this.outstanding = csvRecord.getBigDecimal("outstanding")
         this.totals = csvRecord.getBigDecimal("totals")
         this.total_assets = csvRecord.getBigDecimal("totalAssets")
         this.liquid_assets = csvRecord.getBigDecimal("liquidAssets")
@@ -122,6 +122,7 @@ class StockBasics : BaseModel() {
 
     companion object : Model.Find<Long, StockBasics>() {
         fun CsvToDb(csvFile: File) {
+            val changedList = mutableListOf<StockBasics>()
             CSVParser.parse(csvFile, Charset.forName("UTF-8"), CSVFormat.DEFAULT.withFirstRecordAsHeader())
                     .asIterable()
                     .forEach {
@@ -131,21 +132,22 @@ class StockBasics : BaseModel() {
                             // new data
                             binfo = StockBasics()
                             binfo.FillBy(csvRecord = it)
-                            binfo.save()
+                            changedList.add(binfo)
                         } else {
                             // 数据库有对应的记录, 先检查该记录和最新的数据是否一致
                             // 如果不一致, 则需要将该条记录标记为"过期", 然后记录一套新的记录
                             if (binfo.Changed(csvRecord = it)) {
                                 // 数据改变了
                                 binfo.expired = true
-                                binfo.save()
+                                changedList.add(binfo)
 
                                 val newRec = StockBasics()
                                 newRec.FillBy(csvRecord = it)
-                                newRec.save()
+                                changedList.add(newRec)
                             }
                         }
                     }
+            DB.Default().saveAll(changedList)
         }
 
 

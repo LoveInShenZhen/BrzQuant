@@ -301,8 +301,8 @@ create table operation_data (
 
 create table plan_task (
   id                            bigint auto_increment not null,
-  require_seq                   tinyint(1) DEFAULT '1' COMMENT '是否要求顺序执行',
-  seq_type                      varchar(64) DEFAULT 'global_seq' COMMENT '顺序执行的类别' not null,
+  require_seq                   tinyint(1) COMMENT '是否要求顺序执行',
+  seq_type                      varchar(64) COMMENT '顺序执行的类别' not null,
   plan_run_time                 DATETIME COMMENT '任务计划执行时间' not null,
   task_status                   INTEGER DEFAULT 0 COMMENT '任务状态: 0:WaitingInDB, 7:WaitingInQueue, 8:Error' not null,
   class_name                    varchar(1024) COMMENT 'Runnable task class name' not null,
@@ -371,6 +371,7 @@ create table stock_basics (
   bvps                          decimal(20,4) COMMENT '每股净资',
   pb                            decimal(20,4) COMMENT '市净率',
   time_to_market                DATETIME COMMENT '上市日期',
+  expired                       tinyint(1) COMMENT '是否过期',
   version                       bigint not null,
   when_created                  datetime(6) not null,
   when_modified                 datetime(6) not null,

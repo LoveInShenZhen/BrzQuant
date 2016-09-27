@@ -31,6 +31,8 @@ libraryDependencies += "org.jodd" % "jodd-mail" % "3.7"
 
 libraryDependencies += "commons-io" % "commons-io" % "2.5"
 
+libraryDependencies += "org.apache.commons" % "commons-exec" % "1.3"
+
 libraryDependencies += "org.simpleframework" % "simple-xml" % "2.7.1"
 
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.39"

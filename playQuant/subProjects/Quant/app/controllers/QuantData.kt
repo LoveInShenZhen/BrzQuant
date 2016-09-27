@@ -31,7 +31,4 @@ class QuantData : JsonpController() {
         StockBasics.CsvToDb(cfile)
         return ok(ReplyBase())
     }
-
-
-
 }

@@ -18,8 +18,6 @@ class QuantSample : JsonpController() {
     @Comment("Quant 临时测试代码")
     @JsonApi
     fun QuantTest() : Result {
-        val csvFile = File("/Users/kk/Downloads/交易所日历1991-2016.csv")
-        TradeCal.CsvToDb(csvFile)
         return ok(ReplyBase())
     }
 

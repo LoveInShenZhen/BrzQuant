@@ -10,7 +10,7 @@ import javax.persistence.Entity
 
 /**
  * Created by kk on 16/9/21.
- * 大单交易数据(默认为大于等于400手)
+ * 大单交易数据(默认为大于等于100手)
  */
 
 @Entity

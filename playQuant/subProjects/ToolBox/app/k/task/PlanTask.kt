@@ -17,10 +17,10 @@ import javax.persistence.Table
 @Table(name = "plan_task")
 class PlanTask : BaseModel() {
 
-    @Column(columnDefinition = "TINYINT(1) DEFAULT '1' COMMENT '是否要求顺序执行'")
+    @Column(columnDefinition = "TINYINT(1) COMMENT '是否要求顺序执行'")
     var require_seq: Boolean = false
 
-    @Column(columnDefinition = "VARCHAR(64) DEFAULT 'global_seq' COMMENT '顺序执行的类别'", nullable = false)
+    @Column(columnDefinition = "VARCHAR(64) COMMENT '顺序执行的类别'", nullable = false)
     var seq_type: String? = null
 
     @Column(columnDefinition = "DATETIME COMMENT '任务计划执行时间'", nullable = false)

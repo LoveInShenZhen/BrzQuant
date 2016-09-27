@@ -356,8 +356,8 @@ create table report_data (
 create table stock_basics (
   id                            bigint auto_increment not null,
   code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
-  c_name                        varchar(16) COMMENT '股票名称' not null,
-  industry                      varchar(16) COMMENT '股票名称',
+  c_name                        varchar(16) COMMENT '股票名称',
+  industry                      varchar(16) COMMENT '所属行业',
   area                          varchar(8) COMMENT '地区',
   pe                            decimal(20,4) COMMENT '市盈率',
   outstanding                   decimal(20,4) COMMENT '流通股本',

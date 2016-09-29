@@ -18,14 +18,14 @@ class FetchHistoryData : Runnable {
     var start = ""          // 开始日期,格式YYYY-MM-DD
     var end = ""            // 结束日期,格式YYYY-MM-DD
     var ktype = ""          // 数据类型,D=日k线 W=周 M=月 5=5分钟 15=15分钟 30=30分钟 60=60分钟
-    set(value) {
-        if (value !in setOf("D", "W", "M", "5", "15", "30", "60")) {
-            throw BizLogicException("不合法的 ktype: $value")
+        set(value) {
+            if (value !in setOf("D", "W", "M", "5", "15", "30", "60")) {
+                throw BizLogicException("不合法的 ktype: $value")
+            }
+            field = value
         }
-        field = value
-    }
-    var retry_count = 3     // 当网络异常后重试次数,默认为3
-    var pause = 0           // 重试时停顿秒数,默认为0
+    var retry_count = 5         // 当网络异常后重试次数,默认为5
+    var pause = 0.5             // 重试时停顿秒数,默认为 0.5
 
     override fun run() {
 
@@ -95,8 +95,8 @@ class FetchHistoryData : Runnable {
     }
 
     companion object {
-        fun AddTask(code:String, start:JDateTime, end:JDateTime, ktype:String, retryCount:Int=3, pause:Int=0) {
-            val task = FetchHistoryData();
+        fun AddTask(code: String, start: JDateTime, end: JDateTime, ktype: String, retryCount: Int = 3, pause: Double = 0.5) {
+            val task = FetchHistoryData()
             task.code = code
             task.start = start.toString("YYYY-MM-DD")
             task.end = end.toString("YYYY-MM-DD")
@@ -107,6 +107,16 @@ class FetchHistoryData : Runnable {
             PlanTask.addTask(task = task,
                     requireSeq = true,
                     seqType = "FetchData")
+        }
+
+        fun FilterStocks(): List<StockBasics> {
+            // 排除掉未上市的
+            // 排除掉 ST 股
+            return StockBasics.where()
+                    .eq("expired", false)
+                    .isNotNull("time_to_market")
+                    .findList()
+                    .filter { !it.c_name.toUpperCase().contains("st", ignoreCase = true) }
         }
     }
 }

@@ -43,7 +43,7 @@ parser.add_argument('--end', help='结束日期,格式YYYY-MM-DD', type=str)
 parser.add_argument('--ktype', help='数据类型,D=日k线 W=周 M=月 5=5分钟 15=15分钟 30=30分钟 60=60分钟,默认为D', type=str,
                     choices=['D', 'W', 'M', '15', '30', '60'], default='D')
 parser.add_argument('--retry_count', help='当网络异常后重试次数,默认为3', type=int, default=3)
-parser.add_argument('--pause', help='重试时停顿秒数,默认为0', type=int, default=0)
+parser.add_argument('--pause', help='重试时停顿秒数,默认为0', type=float, default=0)
 parser.add_argument('-d', '--dir', help='保存 csv 数据的目录', default="/Users/kk/ssdwork/github/tuShareData", type=str)
 parser.add_argument('--fake', help='不获取数据,仅仅返回数据文件路径', action='store_true', default=False)
 args = parser.parse_args()

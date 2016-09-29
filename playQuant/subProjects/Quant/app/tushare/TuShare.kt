@@ -95,6 +95,11 @@ class TuShareScript(val name: String, timeOutMs: Long = 60000) {
                 return ScriptResult(ExitCode, "python script error", "")
             }
         }
+
+    val CommandLineString: String
+        get() {
+            return cmd.toString()
+        }
 }
 
 object QuantConfig {
@@ -104,8 +109,8 @@ object QuantConfig {
         }
 
     val dataDir: String
-    get() {
-        return Hub.configuration().getString("tushare.dataDir", "/Users/kk/ssdwork/github/tuShareData")
-    }
+        get() {
+            return Hub.configuration().getString("tushare.dataDir", "/Users/kk/ssdwork/github/tuShareData")
+        }
 }
 

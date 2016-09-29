@@ -7,6 +7,8 @@ import k.reply.ReplyBase
 import models.tushare.StockBasics
 import models.tushare.TradeCal
 import play.mvc.Result
+import tushare.tasks.FetchHistoryData
+import tushare.tasks.FetchStockBasics
 import java.io.File
 
 /**
@@ -24,11 +26,11 @@ class QuantData : JsonpController() {
         return ok(ReplyBase())
     }
 
-    @Comment("从指定的 CSV 文件加载 沪深上市公司基本情况数据 到数据库")
+    @Comment("下载股票基本信息数据并更新到数据库")
     @JsonApi
-    fun SetupStockBasics(@Comment("CSV 数据文件路径") csvPath: String): Result {
-        val cfile = File(csvPath)
-        StockBasics.CsvToDb(cfile)
+    fun DownloadStockBasics(): Result {
+        val task = FetchStockBasics()
+        task.run()
         return ok(ReplyBase())
     }
 }

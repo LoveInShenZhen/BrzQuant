@@ -36,33 +36,47 @@ Each parameter has its own more detailed description below, but in short they ar
 
 """
 
-parser.add_argument('--code', help='股票代码，即6位数字代码，或者指数代码（sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板）',
+parser.add_argument('--code', help='股票代码,即6位数字代码,或者指数代码（sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板）',
                     type=str)
-parser.add_argument('--start', help='开始日期，格式YYYY-MM-DD', type=str)
-parser.add_argument('--end', help='结束日期，格式YYYY-MM-DD', type=str)
-parser.add_argument('--ktype', help='数据类型，D=日k线 W=周 M=月 5=5分钟 15=15分钟 30=30分钟 60=60分钟，默认为D', type=str,
+parser.add_argument('--start', help='开始日期,格式YYYY-MM-DD', type=str)
+parser.add_argument('--end', help='结束日期,格式YYYY-MM-DD', type=str)
+parser.add_argument('--ktype', help='数据类型,D=日k线 W=周 M=月 5=5分钟 15=15分钟 30=30分钟 60=60分钟,默认为D', type=str,
                     choices=['D', 'W', 'M', '15', '30', '60'], default='D')
-parser.add_argument('--retry_count', help='当网络异常后重试次数，默认为3', type=int, default=3)
+parser.add_argument('--retry_count', help='当网络异常后重试次数,默认为3', type=int, default=3)
 parser.add_argument('--pause', help='重试时停顿秒数,默认为0', type=int, default=0)
 parser.add_argument('-d', '--dir', help='保存 csv 数据的目录', default="/Users/kk/ssdwork/github/tuShareData", type=str)
+parser.add_argument('--fake', help='不获取数据,仅仅返回数据文件路径', action='store_true', default=False)
 args = parser.parse_args()
 
 
 def main():
-    fname = '%s.%s.%s.csv' % (args.ktype, args.start, args.end)
-    output_dir = os.path.join(args.dir, "get_hist_data", args.code)
-    os.makedirs(output_dir, exist_ok=True)
-    csvname = os.path.join(output_dir, fname)
+    res = {}
+    try:
+        fname = '%s.%s.%s.csv' % (args.ktype, args.start, args.end)
+        output_dir = os.path.join(args.dir, "get_hist_data", args.code)
+        os.makedirs(output_dir, exist_ok=True)
+        csvname = os.path.join(output_dir, fname)
 
-    df = ts.get_hist_data(code=args.code, start=args.start, end=args.end, ktype=args.ktype,
-                          retry_count=args.retry_count, pause=args.pause)
+        res['ret'] = 0
+        res['msg'] = 'OK'
+        res['csvpath'] = csvname
 
-    df.to_csv(path_or_buf=csvname, float_format='%.6f')
+        if args.fake:
+            print(json.dumps(res, sort_keys=True, indent=4))
+            exit(0)
+        else:
+            df = ts.get_hist_data(code=args.code, start=args.start, end=args.end, ktype=args.ktype,
+                                  retry_count=args.retry_count, pause=args.pause)
 
-    res = {'ret': 0, 'msg': 'OK', 'csvpath': csvname}
-    if (df.empty):
+            df.to_csv(path_or_buf=csvname, float_format='%.6f')
+
+            if df.empty:
+                res['ret'] = -1
+                res['msg'] = 'No Data'
+
+    except Exception as ex:
         res['ret'] = -1
-        res['msg'] = 'No Data'
+        res['msg'] = str(ex)
 
     print(json.dumps(res, sort_keys=True, indent=4))
     exit(0)

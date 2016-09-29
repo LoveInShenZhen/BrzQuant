@@ -39,6 +39,8 @@ Each parameter has its own more detailed description below, but in short they ar
 """
 
 parser.add_argument('-d', '--dir', help='保存 csv 数据的目录', default="/Users/kk/ssdwork/github/tuShareData", type=str)
+parser.add_argument('--fake', help='不获取数据,仅仅返回数据文件路径', action='store_true', default=False)
+
 args = parser.parse_args()
 
 
@@ -52,15 +54,21 @@ def main():
         os.makedirs(output_dir, exist_ok=True)
         csvname = os.path.join(output_dir, fname)
 
-        df = ts.get_stock_basics()
-        df.to_csv(path_or_buf=csvname, float_format='%.6f')
         res['ret'] = 0
         res['msg'] = 'OK'
         res['csvpath'] = csvname
 
-        if df.empty:
-            res['ret'] = -1
-            res['msg'] = 'No Data'
+        if args.fake:
+            print(json.dumps(res, sort_keys=True, indent=4))
+            exit(0)
+        else:
+            df = ts.get_stock_basics()
+            df.to_csv(path_or_buf=csvname, float_format='%.6f')
+
+            if df.empty:
+                res['ret'] = -1
+                res['msg'] = 'No Data'
+
     except Exception as ex:
         res['ret'] = -1
         res['msg'] = str(ex)

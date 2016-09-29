@@ -6,7 +6,7 @@
 GET        /                        controllers.HomeController.index
 # An example controller showing how to use dependency injection
 GET        /count                   controllers.CountController.count
-# An example controller showing how to write asynchronous code
+# An example controller showing how to write asynchronous stockCode
 GET        /message                 controllers.AsyncController.message
 
 # 测试组方法

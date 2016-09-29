@@ -6,7 +6,7 @@
 create table big_trade (
   id                            bigint auto_increment not null,
   level_vol                     INT(8) COMMENT '手数,默认为400手',
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
   c_name                        varchar(16) COMMENT '股票名称' not null,
   t_time                        DATETIME COMMENT '交易日期时间' not null,
   price                         decimal(20,4) COMMENT '成交价格',
@@ -21,7 +21,7 @@ create table big_trade (
 
 create table cashflow_data (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
   c_name                        varchar(16) COMMENT '股票名称' not null,
   report_year                   INTEGER COMMENT '年度,4位数字',
   report_season                 INTEGER COMMENT '季度: 1~4',
@@ -38,7 +38,7 @@ create table cashflow_data (
 
 create table debtpaying_data (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
   c_name                        varchar(16) COMMENT '股票名称' not null,
   report_year                   INTEGER COMMENT '年度,4位数字',
   report_season                 INTEGER COMMENT '季度: 1~4',
@@ -56,7 +56,7 @@ create table debtpaying_data (
 
 create table growth_data (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
   c_name                        varchar(16) COMMENT '股票名称' not null,
   report_year                   INTEGER COMMENT '年度,4位数字',
   report_season                 INTEGER COMMENT '季度: 1~4',
@@ -74,7 +74,7 @@ create table growth_data (
 
 create table history15min (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
   t_date                        DATETIME COMMENT '交易日期' not null,
   open                          decimal(20,4) COMMENT '开盘价',
   high                          decimal(20,4) COMMENT '最高价',
@@ -97,7 +97,7 @@ create table history15min (
 
 create table history30min (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
   t_date                        DATETIME COMMENT '交易日期' not null,
   open                          decimal(20,4) COMMENT '开盘价',
   high                          decimal(20,4) COMMENT '最高价',
@@ -120,7 +120,7 @@ create table history30min (
 
 create table history5min (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
   t_date                        DATETIME COMMENT '交易日期' not null,
   open                          decimal(20,4) COMMENT '开盘价',
   high                          decimal(20,4) COMMENT '最高价',
@@ -143,7 +143,7 @@ create table history5min (
 
 create table history60min (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
   t_date                        DATETIME COMMENT '交易日期' not null,
   open                          decimal(20,4) COMMENT '开盘价',
   high                          decimal(20,4) COMMENT '最高价',
@@ -166,7 +166,7 @@ create table history60min (
 
 create table history_day (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
   t_date                        DATETIME COMMENT '交易日期' not null,
   open                          decimal(20,4) COMMENT '开盘价',
   high                          decimal(20,4) COMMENT '最高价',
@@ -189,7 +189,7 @@ create table history_day (
 
 create table history_hfq_data (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
   t_date                        DATETIME COMMENT '交易日期' not null,
   open                          decimal(20,4) COMMENT '开盘价',
   high                          decimal(20,4) COMMENT '最高价',
@@ -205,7 +205,7 @@ create table history_hfq_data (
 
 create table history_month (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
   t_date                        DATETIME COMMENT '交易日期' not null,
   open                          decimal(20,4) COMMENT '开盘价',
   high                          decimal(20,4) COMMENT '最高价',
@@ -228,7 +228,7 @@ create table history_month (
 
 create table history_nofq_data (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
   t_date                        DATETIME COMMENT '交易日期' not null,
   open                          decimal(20,4) COMMENT '开盘价',
   high                          decimal(20,4) COMMENT '最高价',
@@ -244,7 +244,7 @@ create table history_nofq_data (
 
 create table history_qfq_data (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
   t_date                        DATETIME COMMENT '交易日期' not null,
   open                          decimal(20,4) COMMENT '开盘价',
   high                          decimal(20,4) COMMENT '最高价',
@@ -260,7 +260,7 @@ create table history_qfq_data (
 
 create table history_week (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
   t_date                        DATETIME COMMENT '交易日期' not null,
   open                          decimal(20,4) COMMENT '开盘价',
   high                          decimal(20,4) COMMENT '最高价',
@@ -283,7 +283,7 @@ create table history_week (
 
 create table operation_data (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
   c_name                        varchar(16) COMMENT '股票名称' not null,
   report_year                   INTEGER COMMENT '年度,4位数字',
   report_season                 INTEGER COMMENT '季度: 1~4',
@@ -317,7 +317,7 @@ create table plan_task (
 
 create table profit_data (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
   c_name                        varchar(16) COMMENT '股票名称' not null,
   report_year                   INTEGER COMMENT '年度,4位数字',
   report_season                 INTEGER COMMENT '季度: 1~4',
@@ -336,7 +336,7 @@ create table profit_data (
 
 create table report_data (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
   c_name                        varchar(16) COMMENT '股票名称' not null,
   eps                           decimal(20,4) COMMENT '每股收益',
   eps_yoy                       DECIMAL(20,4) COMMENT '每股收益同比(%)',
@@ -355,7 +355,7 @@ create table report_data (
 
 create table stock_basics (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码' not null,
   c_name                        varchar(16) COMMENT '股票名称',
   industry                      varchar(16) COMMENT '所属行业',
   area                          varchar(8) COMMENT '地区',
@@ -380,7 +380,7 @@ create table stock_basics (
 
 create table tick_data (
   id                            bigint auto_increment not null,
-  code                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
+  stockCode                          VARCHAR(6) COMMENT '股票代码, 6位数字代码，或者指数代码 [sh=上证指数 sz=深圳成指 hs300=沪深300指数 sz50=上证50 zxb=中小板 cyb=创业板]' not null,
   tick_time                     DATETIME COMMENT '分笔交易日期时间' not null,
   price                         decimal(20,4) COMMENT '成交价格',
   price_change                  decimal(20,4) COMMENT '价格变动',

@@ -58,7 +58,7 @@ class TuShareScript(val name: String, timeOutMs: Long = 60000) {
     private val outAndErr: FastByteArrayOutputStream
 
     init {
-        cmd = CommandLine(FileNameUtil.concat(Config.scriptPath, name))
+        cmd = CommandLine(FileNameUtil.concat(QuantConfig.scriptDir, name))
 
         executor = DefaultExecutor()
 
@@ -97,12 +97,15 @@ class TuShareScript(val name: String, timeOutMs: Long = 60000) {
         }
 }
 
-object Config {
-    val scriptPath: String
+object QuantConfig {
+    val scriptDir: String
         get() {
-            return Hub.configuration().getString("tushare.scriptPath", "/Users/kk/ssdwork/github/BrzQuant/tushareQuant/src")
+            return Hub.configuration().getString("tushare.scriptDir", "/Users/kk/ssdwork/github/BrzQuant/tushareQuant/src")
         }
 
-
+    val dataDir: String
+    get() {
+        return Hub.configuration().getString("tushare.dataDir", "/Users/kk/ssdwork/github/tuShareData")
+    }
 }
 

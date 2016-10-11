@@ -13,17 +13,17 @@ lazy val commonSettings = Seq(
 
 lazy val k_base = (project in file("subProjects/ToolBox"))
   .settings(commonSettings: _*)
-  .enablePlugins(PlayJava, PlayEbean)
+  .enablePlugins(PlayEbean)
 
 lazy val quant = (project in file("subProjects/Quant"))
   .settings(commonSettings: _*)
-  .enablePlugins(PlayJava, PlayEbean)
+  .enablePlugins(PlayEbean)
   .dependsOn(k_base)
 
 
 lazy val root = (project in file("."))
   .settings(commonSettings: _*)
-  .enablePlugins(PlayJava, PlayEbean)
+  .enablePlugins(PlayJava)
   .aggregate(k_base)
   .dependsOn(k_base)
   .aggregate(quant)

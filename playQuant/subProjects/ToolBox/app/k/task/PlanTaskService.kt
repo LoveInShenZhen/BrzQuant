@@ -9,20 +9,30 @@ import k.ebean.DB
 import models.task.PlanTask
 import models.task.TaskStatus
 import play.Logger
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 /**
  * Created by kk on 16/9/19.
  */
 object PlanTaskService {
 
-    private val seqWorker: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-    private val parallelWorker: ScheduledExecutorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors())
+    private val parallelWorkerCount = 2 //Runtime.getRuntime().availableProcessors()
 
-    private var seqTaskLoader: Thread? = null
-    private var parallerTaskLoader: Thread? = null
+    private val seqPlanningWorker: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
+    private val parallelPlanningWorker: ScheduledExecutorService = Executors.newScheduledThreadPool(parallelWorkerCount)
+
+    private var seqPlanningTaskLoader: Thread? = null
+    private var parallerPlanningTaskLoader: Thread? = null
+
+    private var seqTaskProducer: Thread? = null
+    private val seqWorker: ExecutorService = Executors.newSingleThreadExecutor()
+    private val seqTaskQueue: BlockingQueue<PlanTask> = LinkedBlockingQueue(2)
+
+    private var parallerTaskProducer: Thread? = null
+    private val parallerWorker: ExecutorService = Executors.newFixedThreadPool(parallelWorkerCount)
+    private val parallerTaskQueue: BlockingQueue<PlanTask> = LinkedBlockingQueue(parallelWorkerCount + 1)
+
+
     private val taskNotifier = Object()
     private val taskLoaderWaitTime = 5
     private var stopNow: Boolean = true
@@ -36,14 +46,25 @@ object PlanTaskService {
 
             stopNow = false
 
-            seqTaskLoader = BuildTaskLoader(true, seqWorker)
-            parallerTaskLoader = BuildTaskLoader(false, parallelWorker)
+            seqPlanningTaskLoader = BuildPlanningTaskLoader(true, seqPlanningWorker)
+            parallerPlanningTaskLoader = BuildPlanningTaskLoader(false, parallelPlanningWorker)
 
-            seqTaskLoader!!.start()
-            parallerTaskLoader!!.start()
+            seqPlanningTaskLoader!!.start()
+            parallerPlanningTaskLoader!!.start()
+
+            seqTaskProducer = BuildSeqTaskLoader()
+            seqTaskProducer!!.start()
+            StartSeqWorker()
+
+            parallerTaskProducer = BuildParallerTaskLoader()
+            parallerTaskProducer!!.start()
+            StartParallerWorker()
 
             isRunning = true
+
+            PlanTask.ResetTaskStatus()
             Helper.DLog(AnsiColor.GREEN, "Plan Task Service Started......")
+
         } catch (ex: Exception) {
             stopNow = true
             isRunning = false
@@ -53,20 +74,27 @@ object PlanTaskService {
     }
 
     fun Stop() {
+        Helper.DLog("Try to stop paln task service ...")
         if (!isRunning) return
         stopNow = true
         try {
             Helper.DLog(AnsiColor.GREEN, "Try to stop plan task loader...")
             NotifyNewTask()
-            seqTaskLoader!!.join(120000)
-            parallerTaskLoader!!.join(120000)
+            seqPlanningTaskLoader!!.join(120000)
+            parallerPlanningTaskLoader!!.join(120000)
+            seqTaskProducer!!.join(120000)
+            parallerTaskProducer!!.join(120000)
 
             Helper.DLog(AnsiColor.GREEN, "Try to stop plan task worker...")
+            seqPlanningWorker.shutdown()
+            parallelPlanningWorker.shutdown()
             seqWorker.shutdown()
-            parallelWorker.shutdown()
+            parallerWorker.shutdown()
 
+            seqPlanningWorker.awaitTermination(120, TimeUnit.SECONDS)
+            parallelPlanningWorker.awaitTermination(120, TimeUnit.SECONDS)
             seqWorker.awaitTermination(120, TimeUnit.SECONDS)
-            parallelWorker.awaitTermination(120, TimeUnit.SECONDS)
+            parallerWorker.awaitTermination(120, TimeUnit.SECONDS)
 
             Helper.DLog(AnsiColor.GREEN, "Plan Task Service Stopped......")
         } catch (ex: Exception) {
@@ -76,11 +104,130 @@ object PlanTaskService {
         }
     }
 
-    private fun BuildTaskLoader(requireSeq: Boolean, worker: ScheduledExecutorService): Thread {
+    private fun BuildSeqTaskLoader(): Thread {
+        return Thread(Runnable {
+            while (true) {
+                if (stopNow) break
+
+                val tasks = DB.RunInTransaction<List<PlanTask>> {
+                    val taskList = PlanTask.where()
+                            .eq("require_seq", true)
+                            .eq("task_status", TaskStatus.WaitingInDB.code)
+                            .isNull("plan_run_time")
+                            .setMaxRows(100)
+                            .findList()
+
+                    taskList.forEach { it.task_status = TaskStatus.WaitingInQueue.code }
+
+                    DB.Default().saveAll(taskList)
+
+                    return@RunInTransaction taskList
+                }
+
+                if (tasks.size == 0) {
+                    // 没有任务需要执行, 等候新任务通知
+                    try {
+                        synchronized(taskNotifier, {
+                            taskNotifier.wait(taskLoaderWaitTime * 1000L)
+                        })
+                    } catch (ex: Exception) {
+                        // do nothing
+                    }
+                } else {
+                    var idx = 0
+                    while (idx < tasks.size) {
+                        if (stopNow) return@Runnable
+
+                        if (this.seqTaskQueue.offer(tasks[idx], 1000, TimeUnit.MILLISECONDS)) {
+                            idx++
+                        }
+                    }
+                }
+            }
+            Helper.DLog("Stop SeqTaskLoader")
+        })
+    }
+
+    private fun StartSeqWorker() {
+        seqWorker.submit {
+            while (true) {
+                if (stopNow) break
+
+                val task = this.seqTaskQueue.poll(1000, TimeUnit.MILLISECONDS)
+                if (task != null) {
+                    process_task(task)
+                }
+            }
+            Helper.DLog("Stop Seq Worker")
+        }
+    }
+
+    private fun BuildParallerTaskLoader(): Thread {
+        return Thread(Runnable {
+            while (true) {
+                if (stopNow) break
+
+                val tasks = DB.RunInTransaction<List<PlanTask>> {
+                    val taskList = PlanTask.where()
+                            .eq("require_seq", false)
+                            .eq("task_status", TaskStatus.WaitingInDB.code)
+                            .isNull("plan_run_time")
+                            .setMaxRows(100)
+                            .findList()
+
+                    taskList.forEach { it.task_status = TaskStatus.WaitingInQueue.code }
+
+                    DB.Default().saveAll(taskList)
+
+                    return@RunInTransaction taskList
+                }
+
+                if (tasks.size == 0) {
+                    // 没有任务需要执行, 等候新任务通知
+                    try {
+                        synchronized(taskNotifier, {
+                            taskNotifier.wait(taskLoaderWaitTime * 1000L)
+                        })
+                    } catch (ex: Exception) {
+                        // do nothing
+                    }
+                } else {
+                    var idx = 0
+                    while (idx < tasks.size) {
+                        if (stopNow) return@Runnable
+
+                        if (this.parallerTaskQueue.offer(tasks[idx], 1000, TimeUnit.MILLISECONDS)) {
+                            idx++
+                        }
+                    }
+                }
+            }
+            Helper.DLog("Stop Paraller TaskLoader")
+        })
+    }
+
+    private fun StartParallerWorker() {
+        for (i in 1..parallelWorkerCount) {
+            parallerWorker.submit {
+                while (true) {
+                    if (stopNow) break
+
+                    val task = this.parallerTaskQueue.poll(1000, TimeUnit.MILLISECONDS)
+                    if (task != null) {
+                        process_task(task)
+                    }
+                }
+                Helper.DLog("Stop Paraller Worker: $i")
+            }
+        }
+    }
+
+
+    private fun BuildPlanningTaskLoader(requireSeq: Boolean, worker: ScheduledExecutorService): Thread {
         return Thread(Runnable {
             val loadedTasks = mutableListOf<PlanTask>()
             while (true) {
-                if (stopNow) return@Runnable
+                if (stopNow) break
 
                 try {
                     DB.RunInTransaction {
@@ -120,6 +267,7 @@ object PlanTaskService {
                     Logger.error(ExceptionUtil.exceptionChainToString(ex))
                 }
             }
+            Helper.DLog("Stop PlanningTaskLoader for requireSeq: $requireSeq")
         })
     }
 

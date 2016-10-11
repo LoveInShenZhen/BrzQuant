@@ -23,7 +23,7 @@ class PlanTask : BaseModel() {
     @Column(columnDefinition = "VARCHAR(64) COMMENT '顺序执行的类别'", nullable = false)
     var seq_type: String? = null
 
-    @Column(columnDefinition = "DATETIME COMMENT '任务计划执行时间'", nullable = false)
+    @Column(columnDefinition = "DATETIME COMMENT '任务计划执行时间'")
     var plan_run_time: JDateTime? = null
 
     @Column(columnDefinition = "INTEGER DEFAULT 0 COMMENT '任务状态: 0:WaitingInDB, 7:WaitingInQueue, 8:Error'", nullable = false)
@@ -43,7 +43,7 @@ class PlanTask : BaseModel() {
 
     companion object : Model.Find<Long, PlanTask>() {
 
-        fun addTask(task: Runnable, requireSeq: Boolean = false, seqType: String = "", planRunTime: JDateTime = JDateTime(), tag: String = "") {
+        fun addTask(task: Runnable, requireSeq: Boolean = false, seqType: String = "", planRunTime: JDateTime? = null, tag: String = "") {
             val planTask = PlanTask()
             planTask.require_seq = requireSeq
             planTask.seq_type = seqType
@@ -56,7 +56,7 @@ class PlanTask : BaseModel() {
             planTask.save()
         }
 
-        fun addSingletonTask(task: Runnable, requireSeq: Boolean = false, seqType: String = "", planRunTime: JDateTime = JDateTime(), tag: String = "") {
+        fun addSingletonTask(task: Runnable, requireSeq: Boolean = false, seqType: String = "", planRunTime: JDateTime? = null, tag: String = "") {
             val className = task.javaClass.name
             val oldTask = PlanTask.where()
                     .eq("class_name", className)

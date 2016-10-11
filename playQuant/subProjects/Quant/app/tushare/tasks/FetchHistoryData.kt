@@ -2,6 +2,7 @@ package tushare.tasks
 
 import jodd.datetime.JDateTime
 import k.common.BizLogicException
+import k.common.Helper
 import models.task.PlanTask
 import models.tushare.*
 import tushare.QuantConfig
@@ -24,14 +25,15 @@ class FetchHistoryData : Runnable {
             }
             field = value
         }
-    var retry_count = 5         // 当网络异常后重试次数,默认为5
-    var pause = 0.5             // 重试时停顿秒数,默认为 0.5
+    var retry_count = 10         // 当网络异常后重试次数,默认为5
+    var pause = 0.1             // 重试时停顿秒数,默认为 0.5
 
     override fun run() {
 
         val dataFile = File(csvPath())
         // 先判断该次请求的数据文件是否已经存在, 如果已经存在, 则直接更新到数据库
         if (dataFile.exists()) {
+            Helper.DLog("下载历史行情数据: code: $code  ktype: $ktype    $start to $end 请求的数据文件已经存在, 直接更新到数据库")
             when (ktype) {
                 "D" -> HistoryDay.CsvToDb(code, dataFile)
                 "W" -> HistoryWeek.CsvToDb(code, dataFile)
@@ -46,7 +48,12 @@ class FetchHistoryData : Runnable {
             }
         } else {
             // 数据文件不存在, 则尝试去抓取数据
+            Helper.DLog("下载历史行情数据: code: $code  ktype: $ktype    $start to $end ")
+            val startTime = JDateTime()
             val result = fetchData()
+            val endTime = JDateTime()
+            val useTimeInMs = endTime.timeInMillis - startTime.timeInMillis
+            Helper.DLog("下载完毕, 耗时 ${useTimeInMs/1000.0} 秒")
             if (result.ret == 0) {
                 val csvFile = File(result.csvpath)
                 when (ktype) {
@@ -62,7 +69,11 @@ class FetchHistoryData : Runnable {
                     }
                 }
             } else {
-                throw BizLogicException("Failed to getHistoryData.\n${result.msg}")
+                if (result.ret == 99) {
+                    Helper.DLog("没有数据:\n${Helper.ToJsonStringPretty(this)}")
+                } else {
+                    throw BizLogicException("Failed to getHistoryData.\n${result.msg}")
+                }
             }
         }
     }
@@ -117,6 +128,48 @@ class FetchHistoryData : Runnable {
                     .isNotNull("time_to_market")
                     .findList()
                     .filter { !it.c_name.toUpperCase().contains("st", ignoreCase = true) }
+        }
+
+        fun AddTaskFor(stock: StockBasics, ktype: String) {
+            val yearStart = JDateTime("2013-01-01", "YYYY-MM-DD")
+            val thisYear = JDateTime().year
+            while (yearStart.year <= thisYear) {
+                val task = FetchHistoryData()
+                task.code = stock.code
+                val startDay = if (yearStart.isBeforeDate(stock.time_to_market)) stock.time_to_market!! else yearStart
+                val endDay = startDay.clone().setMonth(12).setDay(31)
+                task.start = startDay.toString("YYYY-MM-DD")
+                task.end = endDay.toString("YYYY-MM-DD")
+                task.ktype = ktype
+
+                PlanTask.addTask(task, true, "FetchData")
+
+                yearStart.year = startDay.year + 1
+            }
+        }
+
+        fun AddTaskForIndex(code: String, ktype: String) {
+            val yearStart = JDateTime("2013-01-01", "YYYY-MM-DD")
+            val thisYear = JDateTime().year
+            while (yearStart.year <= thisYear) {
+                val task = FetchHistoryData()
+                task.code = code
+                task.start = yearStart.toString("YYYY-MM-DD")
+
+                val endDay = yearStart.clone().setMonth(12).setDay(31)
+                task.end = endDay.toString("YYYY-MM-DD")
+                task.ktype = ktype
+
+                PlanTask.addTask(task, true, "FetchData")
+
+                yearStart.addYear(1)
+            }
+        }
+
+        fun SetupHistoryDataTask(ktype: String) {
+            val indexs = setOf("sh", "sz", "hs300", "sz50", "zxb", "cyb")
+            indexs.forEach { AddTaskForIndex(it, ktype) }
+            FilterStocks().forEach { AddTaskFor(it, ktype) }
         }
     }
 }

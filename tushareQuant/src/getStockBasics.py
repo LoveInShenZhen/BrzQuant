@@ -66,7 +66,7 @@ def main():
             df.to_csv(path_or_buf=csvname, float_format='%.6f')
 
             if df.empty:
-                res['ret'] = -1
+                res['ret'] = 99
                 res['msg'] = 'No Data'
 
     except Exception as ex:

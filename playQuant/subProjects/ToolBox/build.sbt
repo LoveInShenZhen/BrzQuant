@@ -6,7 +6,6 @@ scalacOptions ++= Seq("-encoding", "UTF8")
 
 kotlinLib("stdlib")
 kotlinLib("reflect")
-//kotlincOptions += "-verbose"
 
 libraryDependencies ++= Seq(
   javaJdbc,
@@ -14,12 +13,10 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
-kotlincOptions += "-verbose"
-kotlinLib("stdlib")
-kotlinLib("reflect")
+scalaSource in Compile := baseDirectory.value / "app"
+javaSource in Compile := baseDirectory.value / "app"
+resourceDirectory in Compile := baseDirectory.value / "conf"
 
-
-libraryDependencies += filters
 
 libraryDependencies += "org.jodd" % "jodd-core" % "3.7"
 

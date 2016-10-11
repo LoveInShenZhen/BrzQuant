@@ -3,30 +3,32 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET        /                           controllers.HomeController.index
+GET        /                                    controllers.HomeController.index
 # An example controller showing how to use dependency injection
-GET        /count                      controllers.CountController.count
+GET        /count                               controllers.CountController.count
 # An example controller showing how to write asynchronous stockCode
-GET        /message                    controllers.AsyncController.message
+GET        /message                             controllers.AsyncController.message
 
 # 测试组方法
-GET        /test                       controllers.Sample.kktest
-GET        /CheckIdCard                controllers.Sample.CheckIdCard(idcard)
-GET        /AddSampleTask              controllers.Sample.AddSampleTask
+GET        /test                                controllers.Sample.kktest
+GET        /CheckIdCard                         controllers.Sample.CheckIdCard(idcard)
+GET        /AddSampleTask                       controllers.Sample.AddSampleTask
 
 # 内置 API 方法
-GET        /apis                       controllers.BuildIn.Apis
-GET        /apiIndex                   controllers.BuildIn.ApiIndex
-GET        /apiSample                  controllers.BuildIn.ApiTest(apiUrl)
-GET        /apiMarkdown                controllers.BuildIn.ApiMarkdown
-GET        /CreateIndexSql             controllers.BuildIn.CreateIndexSql
+GET        /apis                                controllers.BuildIn.Apis
+GET        /apiIndex                            controllers.BuildIn.ApiIndex
+GET        /apiSample                           controllers.BuildIn.ApiTest(apiUrl)
+GET        /apiMarkdown                         controllers.BuildIn.ApiMarkdown
+GET        /CreateIndexSql                      controllers.BuildIn.CreateIndexSql
 
 # 设置 Quant 基础数据
-GET        /QuantTest                  controllers.QuantSample.QuantTest
-GET        /SetupTradeCal              controllers.QuantData.SetupTradeCal(csvPath)
-GET        /DownloadStockBasics        controllers.QuantData.DownloadStockBasics
+GET        /QuantTest                           controllers.QuantSample.QuantTest
+GET        /SetupTradeCal                       controllers.QuantData.SetupTradeCal(csvPath)
+GET        /DownloadStockBasics                 controllers.QuantData.DownloadStockBasics
+GET        /SetupTaskDownloadHistoryData        controllers.QuantData.SetupTaskDownloadHistoryData
+
 
 
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET        /assets/*file                        controllers.Assets.versioned(path="/public", file: Asset)

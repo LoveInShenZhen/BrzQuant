@@ -33,4 +33,22 @@ class QuantData : JsonpController() {
         task.run()
         return ok(ReplyBase())
     }
+
+    @Comment("批量创建任务用于下载个股和指数的历史数据(排除掉 ST 股)")
+    @JsonApi
+    fun SetupTaskDownloadHistoryData(): Result {
+        // D=日k线 W=周 M=月 5=5分钟 15=15分钟 30=30分钟 60=60分钟
+        val ktypes = setOf("D", "W", "M", "5", "15", "30", "60")
+        ktypes.forEach {
+            FetchHistoryData.SetupHistoryDataTask(it)
+        }
+        return ok(ReplyBase())
+    }
+
+    @Comment("批量创建任务用于下载个股和指数的不复权历史数据(排除掉 ST 股)")
+    @JsonApi
+    fun SetupTaskDownloadNoFqHistData(): Result {
+
+        return ok(ReplyBase())
+    }
 }

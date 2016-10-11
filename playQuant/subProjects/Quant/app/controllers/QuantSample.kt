@@ -2,9 +2,9 @@ package controllers
 
 import k.aop.annotations.Comment
 import k.aop.annotations.JsonApi
-import k.common.Helper
 import k.controllers.JsonpController
 import k.reply.ReplyBase
+import models.tushare.StockBasics
 import play.mvc.Result
 import tushare.tasks.FetchHistoryData
 
@@ -19,10 +19,9 @@ class QuantSample : JsonpController() {
     @JsonApi
     fun QuantTest(): Result {
 
-        val stocks = FetchHistoryData.FilterStocks()
-        stocks.forEach { Helper.DLog("${it.code} : ${it.c_name}") }
+        val stock = StockBasics.FindByCode("600023")!!
 
-        Helper.DLog("total: ${stocks.size}")
+        FetchHistoryData.AddTaskFor(stock, "D")
 
         return ok(ReplyBase())
     }

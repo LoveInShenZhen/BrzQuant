@@ -3,6 +3,7 @@ package tushare
 import jodd.datetime.JDateTime
 import jodd.io.FastByteArrayOutputStream
 import jodd.io.FileNameUtil
+import k.common.BizLogicException
 import k.common.Helper
 import k.common.Hub
 import org.apache.commons.csv.CSVRecord
@@ -41,11 +42,25 @@ fun CSVRecord.getBoolean(name: String): Boolean? {
     return ToBoolean(this.get(name))
 }
 
-fun CSVRecord.getJDateTime(name: String, fmt: String = "YYYYMMDD"): JDateTime? {
+fun CSVRecord.getJDateTime(name: String, fmt:String = ""): JDateTime? {
     val value = this.get(name)
     // 分析数据文件得知, 等待上市的股票, 上市日期的字段会给 "0"
     if (value.isBlank() || value == "0") return null
-    return JDateTime(value, fmt)
+
+    if (fmt.isNotBlank()) {
+        return JDateTime(value, fmt)
+    } else {
+        // 自动检测
+        if (value.length == 10 && value.contains("-")) {
+            return JDateTime(value, "YYYY-MM-DD")
+        } else if (value.length == 8 && !value.contains("-") && !value.contains(":")) {
+            return JDateTime(value, "YYYYMMDD")
+        } else if (value.length == 19 && value.contains("-") && value.contains(":")) {
+            return JDateTime(value, "YYYY-MM-DD hh:mm:ss")
+        } else {
+            throw BizLogicException("无法识别的日期时间字符串: $value")
+        }
+    }
 }
 
 data class ScriptResult(var ret: Int = 0, var msg: String = "", var csvpath: String = "")

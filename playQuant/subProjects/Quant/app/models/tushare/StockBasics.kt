@@ -28,6 +28,7 @@ class StockBasics : BaseModel() {
     @Column(columnDefinition = "VARCHAR(6) COMMENT '股票代码, 6位数字代码'", nullable = false)
     var code: String = ""
 
+    @DBIndexed
     @Column(columnDefinition = "VARCHAR(16) COMMENT '股票名称'")
     var c_name: String = ""
 

@@ -5,6 +5,9 @@ target
 /playQuant/.classpath
 /playQuant/.project
 /playQuant/.settings
+/playQuant/.history
 /playQuant/RUNNING_PID
 /playQuant/subProjects/*/target
 /playQuant/lib/kotlin-*
+/tushareQuant/.idea
+/tushareQuant/.idea_modules

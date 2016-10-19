@@ -2,14 +2,11 @@ package controllers
 
 import k.aop.annotations.Comment
 import k.aop.annotations.JsonApi
-import k.common.Hub
 import k.common.apidoc.ApiDefinition
 import k.common.apidoc.DefinedApis
 import k.common.template.ResourceTemplateHelper
 import k.controllers.JsonpController
 import k.ebean.DbIndex
-import play.api.inject.Modules
-import play.inject.BuiltInModule
 import play.mvc.Result
 import javax.inject.Inject
 
@@ -18,9 +15,11 @@ import javax.inject.Inject
  */
 
 @Comment("内置 API 方法")
-class BuildIn
+class BuiltIn
 @Inject
-constructor(var definedApis: DefinedApis) : JsonpController() {
+constructor(var definedApis: DefinedApis,
+            var environment: play.api.Environment,
+            var configuration: play.api.Configuration) : JsonpController() {
 
     @Comment("列出所有的 API")
     @JsonApi(ReplyClass = ApiDefinition::class)
@@ -52,5 +51,4 @@ constructor(var definedApis: DefinedApis) : JsonpController() {
     fun CreateIndexSql(): Result {
         return ok(DbIndex.GetCreateIndexSql()).`as`("text/plain; charset=UTF-8")
     }
-
 }

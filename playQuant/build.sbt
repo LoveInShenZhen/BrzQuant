@@ -31,11 +31,11 @@ lazy val root = (project in file("."))
 
 publishArtifact in(Compile, packageDoc) := false
 
-libraryDependencies ++= Seq(
-  javaJdbc,
-  cache,
-  javaWs
-)
+// libraryDependencies ++= Seq(
+//   javaJdbc,
+//   cache,
+//   javaWs
+// )
 
 kotlincOptions += "-verbose"
 kotlinLib("stdlib")

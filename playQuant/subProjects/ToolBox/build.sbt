@@ -14,7 +14,9 @@ libraryDependencies ++= Seq(
 )
 
 scalaSource in Compile := baseDirectory.value / "app"
+
 javaSource in Compile := baseDirectory.value / "app"
+
 resourceDirectory in Compile := baseDirectory.value / "conf"
 
 

@@ -14,8 +14,11 @@ libraryDependencies ++= Seq(
 )
 
 scalaSource in Compile := baseDirectory.value / "app"
+
 javaSource in Compile := baseDirectory.value / "app"
+
 resourceDirectory in Compile := baseDirectory.value / "conf"
+
 
 libraryDependencies += filters
 
@@ -32,5 +35,4 @@ libraryDependencies += "org.simpleframework" % "simple-xml" % "2.7.1"
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.39"
 
 libraryDependencies += "org.apache.commons" % "commons-csv" % "1.4"
-
 

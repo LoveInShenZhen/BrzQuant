@@ -14,5 +14,5 @@ target
 /playQuant/RUNNING_PID
 /playQuant/subProjects/*/target
 /playQuant/lib/kotlin-*
-/tushareQuant/.idea
-/tushareQuant/.idea_modules
+/tushareQuant/.idea/
+/tushareQuant/.idea_modules/

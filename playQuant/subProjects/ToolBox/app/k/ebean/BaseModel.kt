@@ -23,7 +23,7 @@ import javax.persistence.Version
  * elasticsearch) and audit.
  */
 @MappedSuperclass
-abstract class BaseModel : Model() {
+open class BaseModel : Model() {
 
     @Id
     var id: Long? = null
